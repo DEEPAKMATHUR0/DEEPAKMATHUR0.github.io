@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Teachers - RankMaster</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Add Teacher</h2>
+    <input type="email" id="teacher-email" placeholder="Teacher's Email" required>
+    <input type="text" id="teacher-class" placeholder="Class" required>
+    <button onclick="addTeacher()">Add Teacher</button>
+    <p id="message" style="color: red;"></p>
+</div>
+
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBFfpvf7kQBZtLpzqItLHgv9gtYS8QHZ0o",
+        authDomain: "rankmaster-07.firebaseapp.com",
+        projectId: "rankmaster-07",
+        storageBucket: "rankmaster-07.appspot.com",
+        messagingSenderId: "312802413610",
+        appId: "1:312802413610:web:4720b6bc8a22e51d8a0753",
+        measurementId: "G-2HEQ246481"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Check if principal email is stored, if not redirect to register.html
+    window.onload = function() {
+        const principalEmail = localStorage.getItem('registeredEmail');
+        if (!principalEmail) {
+            // Redirect to register.html if principal email is not found
+            window.location.href = "index.html";
+        }
+    };
+
+    // Add teacher to Firestore under the principal's email
+    function addTeacher() {
+        const teacherEmail = document.getElementById('teacher-email').value;
+        const teacherClass = document.getElementById('teacher-class').value;
+        const principalEmail = localStorage.getItem('registeredEmail');  // Retrieve principal email from storage
+
+        if (!teacherEmail || !teacherClass) {
+            document.getElementById('message').innerText = "All fields are required!";
+            return;
+        }
+
+        // Add the teacher's email and class under the principal's email in Firestore
+        db.collection("schools").doc(principalEmail).collection("teachers").doc(teacherEmail).set({
+            class: teacherClass
+        }).then(() => {
+            document.getElementById('message').style.color = "green";
+            document.getElementById('message').innerText = "Teacher added successfully!";
+        }).catch((error) => {
+            document.getElementById('message').innerText = "Error: " + error.message;
+        });
+    }
+</script>
+
+</body>
+</html>
