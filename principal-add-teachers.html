@@ -55,6 +55,7 @@
     <h2>Add Teacher</h2>
     <input type="email" id="teacher-email" placeholder="Teacher's Email" required>
     <input type="text" id="teacher-class" placeholder="Class" required>
+    <input type="password" id="teacher-password" placeholder="Set Password" required>
     <button onclick="addTeacher()">Add Teacher</button>
     <p id="message" style="color: red;"></p>
 </div>
@@ -79,31 +80,40 @@
     window.onload = function() {
         const principalEmail = localStorage.getItem('registeredEmail');
         if (!principalEmail) {
-            // Redirect to register.html if principal email is not found
-            window.location.href = "index.html";
+            window.location.href = "index.html";  // Redirect to register.html if principal email is not found
         }
     };
 
-    // Add teacher to Firestore under the principal's email
+    // Add teacher to Firestore under the principal's email and create user in Firebase Auth
     function addTeacher() {
         const teacherEmail = document.getElementById('teacher-email').value;
         const teacherClass = document.getElementById('teacher-class').value;
+        const teacherPassword = document.getElementById('teacher-password').value;
         const principalEmail = localStorage.getItem('registeredEmail');  // Retrieve principal email from storage
 
-        if (!teacherEmail || !teacherClass) {
+        if (!teacherEmail || !teacherClass || !teacherPassword) {
             document.getElementById('message').innerText = "All fields are required!";
             return;
         }
 
-        // Add the teacher's email and class under the principal's email in Firestore
-        db.collection("schools").doc(principalEmail).collection("teachers").doc(teacherEmail).set({
-            class: teacherClass
-        }).then(() => {
-            document.getElementById('message').style.color = "green";
-            document.getElementById('message').innerText = "Teacher added successfully!";
-        }).catch((error) => {
-            document.getElementById('message').innerText = "Error: " + error.message;
-        });
+        // Step 1: Create the user in Firebase Authentication with the entered password
+        firebase.auth().createUserWithEmailAndPassword(teacherEmail, teacherPassword)
+            .then((userCredential) => {
+                const user = userCredential.user;
+
+                // Step 2: Add the teacher's email and class under the principal's email in Firestore
+                db.collection("schools").doc(principalEmail).collection("teachers").doc(teacherEmail).set({
+                    class: teacherClass
+                }).then(() => {
+                    document.getElementById('message').style.color = "green";
+                    document.getElementById('message').innerText = "Teacher added successfully!";
+                }).catch((error) => {
+                    document.getElementById('message').innerText = "Error: " + error.message;
+                });
+            })
+            .catch((error) => {
+                document.getElementById('message').innerText = "Error: " + error.message;
+            });
     }
 </script>
 
