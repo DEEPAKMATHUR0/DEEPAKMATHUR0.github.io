@@ -4,55 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to RankMaster</title>
-    <style>
-        /* Reset some default browser styles */
+    <style media="screen">
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Body styles */
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f4f4f4; /* Light gray background */
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Header styles */
         header {
-            background-color: #d32f2f; /* Red */
-            color: white;
-            padding: 20px;
-            text-align: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
         }
 
-        /* Main content styles */
-        main {
-            flex: 1;
+        .logo {
+            width: 8em;
+        }
+
+        .navigation a {
+            position: relative;
+            font-size: 1.1em;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 6px 15px;
+            transition: .5s;
+        }
+
+        .navigation a:hover,
+        .navigation a.active {
+            color: #333;
+        }
+
+        .wrapper {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            background-image: linear-gradient(135deg,rgba(103, 111, 224, 0.548), rgba(180, 139, 226, 0.822), rgba(255, 255, 255, 0.637));
+            border-radius: 50px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, .3);
+            padding: 60px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
+            margin-top: 60px;
         }
 
-        .content {
-            max-width: 600px;
+        h1 {
+            font-size: 2.5em;
+            color: #f2f2f2;
+            margin-bottom: 20px;
         }
 
         h2 {
+            font-size: 2em;
+            color: #f2f2f2;
             margin: 20px 0;
         }
 
         p {
             margin-bottom: 30px;
+            color: #f2f2f2;
         }
 
-        /* Button styles */
         .btn {
             background-color: #4CAF50; /* Green */
             color: white;
@@ -66,31 +102,61 @@
             background-color: #45a049; /* Darker green */
         }
 
-        /* Footer styles */
         footer {
             background-color: #333; /* Dark gray */
             color: white;
             text-align: center;
             padding: 10px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>Welcome to RankMaster</h1>
-        <p>Your gateway to efficient school management.</p>
+        <img src="main.png" class="logo">
+        <nav class="navigation">
+            <a href="index.html" class="active">HOME<span></span></a>
+            <a href="about.html">About Us<span></span></a>
+            <a href="login.html">Login / Register<span></span></a>
+            <a href="contact.html">Contact Us<span></span></a>
+        </nav>
     </header>
-    
-    <main>
-        <div class="content">
-            <h2>Manage Your School Activities</h2>
-            <p>Join us in streamlining school processes and enhancing communication.</p>
-            <a href="login.html" class="btn">Get Started</a>
-        </div>
-    </main>
-    
+
+    <div class="wrapper">
+        <h1>Welcome to RankMaster</h1>
+        <h2>Manage Your School Activities</h2>
+        <p>Join us in streamlining school processes and enhancing communication.</p>
+        <a href="login.html" class="btn">Get Started</a>
+    </div>
+
     <footer>
         <p>&copy; 2024 RankMaster. All rights reserved.</p>
     </footer>
+    
+    <!-- Firebase and Ionicons Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIzlpUAto67FIAXUUX75faUC4MXCQpHW8",
+            authDomain: "bacchokasathi.firebaseapp.com",
+            projectId: "bacchokasathi",
+            storageBucket: "bacchokasathi.appspot.com",
+            messagingSenderId: "532690500366",
+            appId: "1:532690500366:web:78b5dac8617e52274cf55f",
+            measurementId: "G-JFWZJ6QCZZ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+    </script>
 </body>
 </html>
