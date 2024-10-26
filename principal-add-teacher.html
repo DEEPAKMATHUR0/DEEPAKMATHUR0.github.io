@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Teacher - RankMaster</title>
+    <style media="screen">
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo {
+            width: 8em;
+        }
+
+        .navigation a {
+            position: relative;
+            font-size: 1.1em;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 6px 15px;
+            transition: .5s;
+        }
+
+        .navigation a:hover,
+        .navigation a.active {
+            color: #333;
+        }
+
+        .navigation a span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 30px;
+            z-index: -1;
+            transform: scale(0);
+            opacity: 0;
+            transition: .5s;
+        }
+
+        .navigation a:hover span,
+        .navigation a.active span {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .form-wrapper {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-box {
+            position: relative;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 45px;
+            border: 2px solid #667eea;
+            border-radius: 30px;
+            padding: 0 20px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .input-box input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        button {
+            width: 100%;
+            height: 45px;
+            background: #667eea;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #fff;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .cancel-link a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .cancel-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="main.png" class="logo">
+        <nav class="navigation">
+            <a href="index.html">HOME<span></span></a>
+            <a href="about.html">About Us<span></span></a>
+            <a href="login.html">Login / Register<span></span></a>
+            <a href="contact.html">Contact Us<span></span></a>
+            <a href="add-teacher.html" class="active">Add Teacher<span></span></a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-wrapper">
+            <h2>Add Teacher</h2>
+            <form id="addTeacherForm">
+                <div class="input-box">
+                    <input type="text" id="teacherName" placeholder="Teacher Name" required>
+                </div>
+                <div class="input-box">
+                    <input type="email" id="teacherEmail" placeholder="Email" required>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="teacherPassword" placeholder="Password" required>
+                </div>
+                
+                <button type="submit">Add Teacher</button>
+            </form>
+            <div class="cancel-link">
+                <p><a href="index.html">Cancel</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIzlpUAto67FIAXUUX75faUC4MXCQpHW8",
+            authDomain: "bacchokasathi.firebaseapp.com",
+            projectId: "bacchokasathi",
+            storageBucket: "bacchokasathi.appspot.com",
+            messagingSenderId: "532690500366",
+            appId: "1:532690500366:web:78b5dac8617e52274cf55f",
+            measurementId: "G-JFWZJ6QCZZ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Handle Add Teacher Form Submission
+        const form = document.getElementById('addTeacherForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const teacherName = document.getElementById('teacherName').value;
+            const email = document.getElementById('teacherEmail').value;
+            const password = document.getElementById('teacherPassword').value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Save teacher data in Firestore
+                await addDoc(collection(db, "teachers"), {
+                    name: teacherName,
+                    email: email,
+                    userId: user.uid,
+                    createdAt: new Date(),
+                });
+
+                alert("Teacher added successfully!");
+                form.reset(); // Reset form fields after submission
+            } catch (error) {
+                alert("Failed to add teacher: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -219,11 +219,9 @@ button {
     <img src="main.png" class="logo">
           <nav class="navigation">
               <a href="index.html" class="active">HOME<span></span></a>
-              <a href="about.html">About<span></span></a>
-              <a href="project.html">Projects<span></span></a>
-              <a href="resource.html">Resources<span></span></a>
-              <a href="workshop.html">Workshops<span></span></a>
-              <a href="feedback.html">Feedback<span></span></a>
+              <a href="about.html">About Us<span></span></a>
+              <a href="login.html">Login / Register<span></span></a>
+              
               <a href="contact.html">Contact Us<span></span></a>
           </nav>
       </header>
@@ -231,7 +229,7 @@ button {
       <div class="wrapper">
         <div class="form-wrapper login">
             <form action="">
-                <h2>Login School</h2>
+                <h2>Login</h2>
                 <div class="input-box">
                     <span class="icon">
                         <ion-icon name="school"></ion-icon>
@@ -255,7 +253,7 @@ button {
                 </div>
                 <button type="submit">Login</button>
                 <div class="sign-link">
-                    <p>Don't have an account? <a href="#" onclick="registerActive()">Register</a></p>
+                    <p>Register school as principal..... <a href="#" onclick="registerActive()">Register</a></p>
                 </div>
             </form>
         </div>
@@ -287,9 +285,108 @@ button {
             </form>
         </div>
     </div>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <script src="script.js"></script>
+    <!-- Firebase and Ionicons Script -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDIzlpUAto67FIAXUUX75faUC4MXCQpHW8",
+        authDomain: "bacchokasathi.firebaseapp.com",
+        projectId: "bacchokasathi",
+        storageBucket: "bacchokasathi.appspot.com",
+        messagingSenderId: "532690500366",
+        appId: "1:532690500366:web:78b5dac8617e52274cf55f",
+        measurementId: "G-JFWZJ6QCZZ"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Toggle between login and register forms
+    const wrapper = document.querySelector('.wrapper');
+    function registerActive() {
+        wrapper.classList.add('active');
+    }
+    function loginActive() {
+        wrapper.classList.remove('active');
+    }
+
+    // Handle Login
+    document.querySelector('.form-wrapper.login form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = e.target.querySelector('input[type="email"]').value;
+        const password = e.target.querySelector('input[type="password"]').value;
+        
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            alert("Logged in successfully!");
+            // Add any post-login actions here, e.g., redirecting to a dashboard
+        } catch (error) {
+            alert("Login failed: " + error.message);
+        }
+    });
+
+    // Handle Registration
+    document.querySelector('.form-wrapper.register form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const schoolName = e.target.querySelector('input[type="text"]').value;
+        const email = e.target.querySelector('input[type="email"]').value;
+        const password = e.target.querySelector('input[type="password"]').value;
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            await addDoc(collection(db, "schools"), {
+                schoolName: schoolName,
+                email: email,
+                userId: user.uid,
+                createdAt: new Date(),
+            });
+            alert("School registered successfully!");
+            loginActive(); // Switch back to the login form
+        } catch (error) {
+            alert("Registration failed: " + error.message);
+        }
+    });
+
+// Handle Registration
+document.querySelector('.form-wrapper.register form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const schoolName = e.target.querySelector('input[type="text"]').value;
+    const principalEmail = e.target.querySelector('input[type="email"]').value; // Get principal's email
+    const email = e.target.querySelectorAll('input[type="email"]')[1].value; // Get the user's email (second email field)
+    const password = e.target.querySelector('input[type="password"]').value;
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Save school name and principal's email in Firestore
+        await addDoc(collection(db, "schools"), {
+            schoolName: schoolName,
+            principalEmail: principalEmail, // Save principal's email
+            userId: user.uid,
+            createdAt: new Date(),
+        });
+
+        alert("School registered successfully!");
+        loginActive(); // Switch back to the login form
+    } catch (error) {
+        alert("Registration failed: " + error.message);
+    }
+});
+
+
+</script>
+
     <script>const wrapper = document.querySelector('.wrapper');
         function registerActive() {
             wrapper.classList.toggle('active');
