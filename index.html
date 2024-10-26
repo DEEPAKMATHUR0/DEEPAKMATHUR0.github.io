@@ -3,133 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RankMaster School Registration</title>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <title>Welcome to RankMaster</title>
     <style>
+        /* Reset some default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styles */
         body {
             font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4; /* Light gray background */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #d32f2f; /* Red */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Main content styles */
+        main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-        .login-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-        }
-        .login-container h2 {
-            margin-bottom: 20px;
             text-align: center;
+            padding: 20px;
         }
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        .content {
+            max-width: 600px;
         }
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
+
+        h2 {
+            margin: 20px 0;
+        }
+
+        p {
+            margin-bottom: 30px;
+        }
+
+        /* Button styles */
+        .btn {
+            background-color: #4CAF50; /* Green */
             color: white;
-            border: none;
+            padding: 15px 25px;
+            text-decoration: none;
             border-radius: 5px;
-            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        .login-container button:hover {
-            background-color: #45a049;
+
+        .btn:hover {
+            background-color: #45a049; /* Darker green */
         }
-        .google-btn {
-            background-color: #4285F4;
-            margin-top: 10px;
-        }
-        .google-btn:hover {
-            background-color: #357AE8;
-        }
-        .toggle {
-            margin-top: 15px;
+
+        /* Footer styles */
+        footer {
+            background-color: #333; /* Dark gray */
+            color: white;
             text-align: center;
+            padding: 10px 0;
         }
     </style>
 </head>
 <body>
-
-<div class="login-container">
-    <h2 id="form-title">RankMaster Signup</h2>
-    <input type="text" id="school-name" placeholder="School Name" required>
-    <input type="email" id="principal-email" placeholder="Principal Email" required>
-    <input type="password" id="password" placeholder="Password">
-    <button id="submit-btn" onclick="registerWithEmail()">Sign Up</button>
-    <p id="error-message" style="color: red;"></p>
-</div>
-
-<script>
-    // Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBFfpvf7kQBZtLpzqItLHgv9gtYS8QHZ0o",
-        authDomain: "rankmaster-07.firebaseapp.com",
-        projectId: "rankmaster-07",
-        storageBucket: "rankmaster-07.appspot.com",
-        messagingSenderId: "312802413610",
-        appId: "1:312802413610:web:4720b6bc8a22e51d8a0753",
-        measurementId: "G-2HEQ246481"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // Register with email, save school info to Firestore, and store email on device
-    function registerWithEmail() {
-        const schoolName = document.getElementById('school-name').value;
-        const principalEmail = document.getElementById('principal-email').value;
-        const password = document.getElementById('password').value;
-
-        if (!schoolName || !principalEmail || !password) {
-            document.getElementById('error-message').innerText = "All fields are required!";
-            return;
-        }
-
-        // Register the principal (school admin)
-        firebase.auth().createUserWithEmailAndPassword(principalEmail, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-
-                // Store the registered email in localStorage
-                localStorage.setItem('registeredEmail', principalEmail);
-
-                // After successful signup, save school and principal data to Firestore
-                db.collection("schools").doc(schoolName).set({
-                    principalEmail: principalEmail
-                }).then(() => {
-                    alert("School and principal email saved successfully!");
-                    // Optionally redirect to another page
-                }).catch((error) => {
-                    document.getElementById('error-message').innerText = "Error saving to Firestore: " + error.message;
-                });
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                document.getElementById('error-message').innerText = errorMessage;
-            });
-    }
-
-    // Optional: Retrieve the stored email when the page loads
-    window.onload = function() {
-        const storedEmail = localStorage.getItem('registeredEmail');
-        if (storedEmail) {
-            alert("Welcome back! Your registered email is: " + storedEmail);
-        }
-    }
-</script>
-
+    <header>
+        <h1>Welcome to RankMaster</h1>
+        <p>Your gateway to efficient school management.</p>
+    </header>
+    
+    <main>
+        <div class="content">
+            <h2>Manage Your School Activities</h2>
+            <p>Join us in streamlining school processes and enhancing communication.</p>
+            <a href="login.html" class="btn">Get Started</a>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 RankMaster. All rights reserved.</p>
+    </footer>
 </body>
 </html>
